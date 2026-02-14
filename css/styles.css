@@ -4,6 +4,19 @@
    ======================================== */
 
 /* ========================================
+   CSS NAMING CONVENTION (BEM-Inspired)
+   ========================================
+   Block: .component-name
+   Element: .component-name__element
+   Modifier: .component-name--modifier
+   State: .component-name.active, .is-*
+   
+   Examples: .card (block), .card-title (element), .card--featured (modifier)
+   Utilities: .mt-1, .flex-center (no hierarchy)
+   Keep selectors shallow to avoid specificity issues.
+   ======================================== */
+
+/* ========================================
    CSS CUSTOM PROPERTIES
    ======================================== */
 :root {
@@ -126,12 +139,12 @@ h1 {
 }
 
 h2 {
-  font-size: var(--font-size-4xl);
+  font-size: clamp(var(--font-size-2xl), 5vw, var(--font-size-4xl));
   letter-spacing: -0.025em;
 }
 
 h3 {
-  font-size: var(--font-size-3xl);
+  font-size: clamp(var(--font-size-xl), 4vw, var(--font-size-3xl));
 }
 
 h4 {
@@ -261,6 +274,7 @@ p {
 .navbar-brand img {
   height: 45px;
   width: auto;
+  aspect-ratio: auto;
 }
 
 .navbar-nav {
@@ -367,7 +381,8 @@ p {
 /* ========================================
    CARDS
    ======================================== */
-.card {
+.card,
+.industry-card {
   background-color: var(--color-bg-white);
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
@@ -375,7 +390,8 @@ p {
   transition: all var(--transition-normal);
 }
 
-.card:hover {
+.card:hover,
+.industry-card:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-xl);
 }
@@ -409,7 +425,7 @@ p {
    HERO SECTION
    ======================================== */
 .hero {
-  padding: 8rem 0 var(--spacing-3xl);
+  padding: 6rem 0 var(--spacing-3xl);
   background: linear-gradient(135deg, #f0fdff 0%, #e0f2fe 100%);
   position: relative;
   overflow: hidden;
@@ -525,20 +541,6 @@ p {
 /* ========================================
    INDUSTRY ICONS
    ======================================== */
-.industry-card {
-  text-align: center;
-  padding: var(--spacing-lg);
-  background: white;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  transition: all var(--transition-normal);
-}
-
-.industry-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-xl);
-}
-
 .industry-icon {
   width: 80px;
   height: 80px;
@@ -586,7 +588,7 @@ thead {
 }
 
 th {
-  padding: 1rem;
+  padding: var(--spacing-sm);
   text-align: left;
   font-weight: 600;
   font-size: var(--font-size-sm);
@@ -595,7 +597,7 @@ th {
 }
 
 td {
-  padding: 1rem;
+  padding: var(--spacing-sm);
   border-bottom: 1px solid var(--color-border-light);
   color: var(--color-text-medium);
 }
@@ -650,6 +652,41 @@ tbody tr:last-child td {
 }
 
 /* ========================================
+   FORM FEEDBACK MESSAGES
+   ======================================== */
+.form-feedback {
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  animation: slideDown 0.3s ease-out;
+  border-left: 4px solid;
+}
+
+.form-feedback--error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-left-color: #dc2626;
+}
+
+.form-feedback--success {
+  background-color: #dcfce7;
+  color: #166534;
+  border-left-color: #22c55e;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
    CTA SECTIONS
    ======================================== */
 .cta-banner {
@@ -681,6 +718,11 @@ tbody tr:last-child td {
   right: 2rem;
   z-index: 999;
   animation: float 3s ease-in-out infinite;
+}
+
+/* Hide floating CTA on contact page to prevent form interference */
+.contact-form-page .floating-cta {
+  display: none;
 }
 
 @keyframes float {
@@ -745,7 +787,7 @@ tbody tr:last-child td {
 }
 
 .tab-button {
-  padding: 1rem 1.5rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--font-size-base);
   font-weight: 500;
   color: var(--color-text-medium);
@@ -753,17 +795,17 @@ tbody tr:last-child td {
   border: none;
   border-bottom: 3px solid transparent;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: color var(--transition-fast);
   position: relative;
   bottom: -2px;
 }
 
-.tab-button:hover {
+.tab-button:hover,
+.tab-button.active {
   color: var(--color-primary);
 }
 
 .tab-button.active {
-  color: var(--color-primary);
   border-bottom-color: var(--color-primary);
 }
 
@@ -798,6 +840,17 @@ tbody tr:last-child td {
 /* ========================================
    RESPONSIVE DESIGN
    ======================================== */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   :root {
     --container-padding: 1rem;
@@ -838,6 +891,7 @@ tbody tr:last-child td {
   .hero-buttons {
     flex-direction: column;
     align-items: stretch;
+    gap: 1rem;
   }
   
   .grid-2,
@@ -876,6 +930,15 @@ tbody tr:last-child td {
   .tab-button {
     white-space: nowrap;
   }
+  
+  /* Contact form: single column on very small phones */
+  #contact-form {
+    display: block;
+  }
+  
+  #contact-form .form-group {
+    margin-bottom: 1.5rem;
+  }
 }
 
 /* ========================================
@@ -896,3 +959,110 @@ tbody tr:last-child td {
 
 .hidden { display: none; }
 .visible { display: block; }
+
+/* ========================================
+   PHASE 2: SECTION INTRO & LAYOUT UTILITIES
+   ======================================== */
+/* Section intro block: centered heading + subtitle with consistent spacing */
+.section-intro {
+  text-align: center;
+}
+
+.section-intro__heading {
+  margin-bottom: 0.25rem;
+}
+
+.section-intro__subtitle {
+  max-width: 800px;
+  margin: 1rem auto 0;
+  color: var(--color-text-light);
+  font-size: var(--font-size-lg);
+}
+
+/* Variant for wider subtitles (900px instead of 800px) */
+.section-intro__subtitle--wide {
+  max-width: 900px;
+}
+
+/* Application list grid utility */
+.grid-list-2col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+/* Flex list with proper alignment */
+.list-flex {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Centered flex column */
+.flex-center-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Utilities for common spacing patterns */
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.max-w-800 {
+  max-width: 800px;
+}
+
+.max-w-900 {
+  max-width: 900px;
+}
+
+.gap-md {
+  gap: var(--spacing-md);
+}
+
+.gap-lg {
+  gap: var(--spacing-lg);
+}
+
+.align-start {
+  align-items: start;
+}
+
+/* Contact form card styling */
+.contact-form-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Width utilities */
+.w-full {
+  width: 100%;
+}
+
+/* Applications page styling */
+.app-list-item {
+  display: flex;
+  align-items: start;
+  gap: var(--spacing-xs);
+}
+
+.app-bullet {
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.app-section-header {
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-primary);
+}
+
+.badge-grid--start {
+  justify-content: flex-start;
+}

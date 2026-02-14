@@ -7,15 +7,9 @@
 // STICKY NAVIGATION
 // ========================================
 const navbar = document.querySelector('.navbar');
-let lastScrollY = window.scrollY;
 
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 50) {
-    navbar.classList.add('scrolled');
-  } else {
-    navbar.classList.remove('scrolled');
-  }
-  lastScrollY = window.scrollY;
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
 });
 
 // ========================================
@@ -25,12 +19,14 @@ const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
 const navbarNav = document.querySelector('.navbar-nav');
 
 if (mobileMenuToggle) {
-  mobileMenuToggle.addEventListener('click', () => {
+  // Toggle menu on button click with stopPropagation to prevent document listener
+  mobileMenuToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
     navbarNav.classList.toggle('active');
   });
 }
 
-// Close mobile menu when clicking outside
+// Close mobile menu when clicking outside navbar
 document.addEventListener('click', (e) => {
   if (navbarNav && !navbar.contains(e.target)) {
     navbarNav.classList.remove('active');
@@ -61,18 +57,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ========================================
 // TABS FUNCTIONALITY (for Products page)
+// Uses event delegation for better scalability
 // ========================================
-const tabButtons = document.querySelectorAll('.tab-button');
-const tabContents = document.querySelectorAll('.tab-content');
+const tabContainer = document.querySelector('.tabs');
 
-tabButtons.forEach(button => {
-  button.addEventListener('click', () => {
+if (tabContainer) {
+  tabContainer.addEventListener('click', (e) => {
+    const button = e.target.closest('.tab-button');
+    if (!button) return;
+
     const targetTab = button.dataset.tab;
-    
+    const tabContents = document.querySelectorAll('.tab-content');
+
     // Remove active class from all buttons and contents
-    tabButtons.forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
     tabContents.forEach(content => content.classList.remove('active'));
-    
+
     // Add active class to clicked button and corresponding content
     button.classList.add('active');
     const targetContent = document.getElementById(targetTab);
@@ -80,49 +80,79 @@ tabButtons.forEach(button => {
       targetContent.classList.add('active');
     }
   });
-});
+}
 
 // ========================================
 // ACTIVE NAV LINK HIGHLIGHTING
+// More robust detection that handles redirects and trailing slashes
 // ========================================
-const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 const navLinks = document.querySelectorAll('.nav-link');
 
 navLinks.forEach(link => {
   const href = link.getAttribute('href');
-  if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+  const currentPath = window.location.pathname;
+  
+  // Check if current page matches link href
+  // Handles: /path/to/page.html, /page.html, /index.html, /
+  const isCurrentPage = 
+    currentPath.endsWith(href) || 
+    (currentPath === '/' && href === 'index.html') ||
+    (currentPath.endsWith('/') && href === 'index.html');
+  
+  if (isCurrentPage) {
     link.classList.add('active');
   }
 });
 
 // ========================================
 // FORM VALIDATION (Contact page)
+// Inline feedback instead of alerts
 // ========================================
 const contactForm = document.getElementById('contact-form');
 
 if (contactForm) {
+  // Create feedback container
+  const feedbackDiv = document.createElement('div');
+  feedbackDiv.className = 'form-feedback';
+  feedbackDiv.style.display = 'none';
+  contactForm.insertBefore(feedbackDiv, contactForm.firstChild);
+
+  // Helper function to show feedback
+  function showFeedback(message, type = 'error') {
+    feedbackDiv.textContent = message;
+    feedbackDiv.className = `form-feedback form-feedback--${type}`;
+    feedbackDiv.style.display = 'block';
+    
+    // Auto-hide success message after 3 seconds
+    if (type === 'success') {
+      setTimeout(() => {
+        feedbackDiv.style.display = 'none';
+      }, 3000);
+    }
+  }
+
   contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
-    const company = document.getElementById('company').value.trim();
     const message = document.getElementById('message').value.trim();
     
+    // Validate required fields
     if (!name || !email || !message) {
-      alert('Please fill in all required fields.');
+      showFeedback('Please fill in all required fields.', 'error');
       return;
     }
     
-    // Email validation
+    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      alert('Please enter a valid email address.');
+      showFeedback('Please enter a valid email address.', 'error');
       return;
     }
     
     // Success message
-    alert('Thank you for your inquiry! We will get back to you soon.');
+    showFeedback('Thank you for your inquiry! We will get back to you soon.', 'success');
     contactForm.reset();
   });
 }
@@ -130,27 +160,21 @@ if (contactForm) {
 // ========================================
 // SCROLL TO TOP FUNCTIONALITY
 // ========================================
-let scrollTopBtn = document.getElementById('scroll-top');
+const scrollTopBtn = document.getElementById('scroll-top');
 
 if (scrollTopBtn) {
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 500) {
-      scrollTopBtn.style.display = 'flex';
-    } else {
-      scrollTopBtn.style.display = 'none';
-    }
+    scrollTopBtn.style.display = window.scrollY > 500 ? 'flex' : 'none';
   });
   
   scrollTopBtn.addEventListener('click', () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
 
 // ========================================
 // COUNTER ANIMATION FOR STATS
+// Handles edge case for zero values
 // ========================================
 function animateCounter(element, target, duration = 2000) {
   const start = 0;
@@ -170,49 +194,35 @@ function animateCounter(element, target, duration = 2000) {
   updateCounter();
 }
 
-// Trigger counter animation when stats section is visible
-const statsObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const counters = entry.target.querySelectorAll('.stat-number');
-      counters.forEach(counter => {
+const statsSection = document.querySelector('.stats-grid');
+
+if (statsSection) {
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      
+      entry.target.querySelectorAll('.stat-number').forEach(counter => {
         const target = parseInt(counter.dataset.target);
-        if (target) {
+        if (!isNaN(target)) {
           animateCounter(counter, target);
         }
       });
       statsObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.5 });
-
-const statsSection = document.querySelector('.stats-grid');
-if (statsSection) {
+    });
+  }, { threshold: 0.5 });
+  
   statsObserver.observe(statsSection);
 }
 
 // ========================================
 // CARD HOVER EFFECTS ENHANCEMENT
 // ========================================
-const cards = document.querySelectorAll('.card, .industry-card');
-
-cards.forEach(card => {
-  card.addEventListener('mouseenter', function() {
-    this.style.transition = 'all 0.3s ease';
-  });
+document.querySelectorAll('.card, .industry-card').forEach(card => {
+  card.style.transition = 'all 0.3s ease';
 });
 
 // ========================================
-// LAZY LOADING FOR IMAGES
+// NATIVE LAZY LOADING FOR IMAGES
+// Modern browsers support native lazy loading
 // ========================================
-if ('loading' in HTMLImageElement.prototype) {
-  const images = document.querySelectorAll('img[loading="lazy"]');
-  images.forEach(img => {
-    img.src = img.dataset.src || img.src;
-  });
-} else {
-  // Fallback for browsers that don't support lazy loading
-  const script = document.createElement('script');
-  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
-  document.body.appendChild(script);
-}
+// No fallback needed - all target browsers support HTML loading="lazy" attribute

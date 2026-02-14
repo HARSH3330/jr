@@ -14,7 +14,7 @@
     <!-- Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body class="contact-form-page">
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
@@ -53,17 +53,17 @@
     <section class="section">
         <div class="container">
             <div class="grid grid-3">
-                <div class="card fade-in" style="text-align: center;">
+                <div class="card fade-in text-center">
                     <div class="card-icon">📋</div>
                     <h3 class="card-title">Request a Quote</h3>
                     <p class="card-text">Get pricing for standard or custom formulations tailored to your specifications.</p>
                 </div>
-                <div class="card fade-in" style="text-align: center;">
+                <div class="card fade-in text-center">
                     <div class="card-icon">📄</div>
                     <h3 class="card-title">Ask for TDS</h3>
                     <p class="card-text">Request technical data sheets and material specifications for any of our products.</p>
                 </div>
-                <div class="card fade-in" style="text-align: center;">
+                <div class="card fade-in text-center">
                     <div class="card-icon">🔬</div>
                     <h3 class="card-title">Technical Consultation</h3>
                     <p class="card-text">Speak with our experts about material selection and application requirements.</p>
@@ -75,11 +75,11 @@
     <!-- Contact Form & Info -->
     <section class="section section-gray">
         <div class="container">
-            <div class="grid grid-2" style="gap: 3rem; align-items: start;">
+            <div class="grid grid-2 gap-lg align-start">
                 <!-- Contact Form -->
                 <div class="fade-in">
                     <h2 class="mb-3">Send Us a Message</h2>
-                    <form id="contact-form" style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <form id="contact-form" class="contact-form-card">
                         <div class="form-group">
                             <label for="name" class="form-label">Full Name *</label>
                             <input type="text" id="name" name="name" class="form-input" required>
@@ -117,7 +117,7 @@
                             <textarea id="message" name="message" class="form-textarea" required></textarea>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+                        <button type="submit" class="btn btn-primary w-full">Send Message</button>
                     </form>
                 </div>
 
