@@ -38,7 +38,7 @@ jobs:
           test -f "contact.html" && echo "✓ contact.html found" || (echo "✗ contact.html missing" && exit 1)
           test -d "css" && echo "✓ css/ directory found" || (echo "✗ css/ directory missing" && exit 1)
           test -d "js" && echo "✓ js/ directory found" || (echo "✗ js/ directory missing" && exit 1)
-          test -f "forms.js" && echo "✓ forms.js found" || (echo "✗ forms.js missing" && exit 1)
+          test -f "js/forms.js" && echo "✓ forms.js found" || (echo "✗ forms.js missing" && exit 1)
           echo ""
           echo "All critical files validated! ✓"
       
