@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Contact us for TPR & TPE compound inquiries, custom formulations, technical support, and quotes. Located in Agra, India.">
-    <title>Contact Us | JR Thermoplast | Agra, India</title>
+    <title>Contact Us | JR Thermoplast | Agra, India</title>₹
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +13,12 @@
     
     <!-- Stylesheet -->
     <link rel="stylesheet" href="css/styles.css?v=5">
+    
+    <!-- EmailJS Library -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/index.min.js" async defer></script>
+    
+    <!-- Google reCAPTCHA v2 -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body class="contact-form-page">
     <!-- Navigation -->
@@ -79,15 +85,15 @@
                 <!-- Contact Form -->
                 <div class="fade-in">
                     <h2 class="mb-3">Send Us a Message</h2>
-                    <form id="contact-form" class="contact-form-card">
+                    <form id="contact-form" data-validate-form data-form-type="contact" class="contact-form-card">
                         <div class="form-group">
                             <label for="name" class="form-label">Full Name *</label>
-                            <input type="text" id="name" name="name" class="form-input" required>
+                            <input type="text" id="name" name="name" class="form-input" data-validate="required" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="email" class="form-label">Email Address *</label>
-                            <input type="email" id="email" name="email" class="form-input" required>
+                            <input type="email" id="email" name="email" class="form-input" data-validate="required,email" required>
                         </div>
                         
                         <div class="form-group">
@@ -114,7 +120,13 @@
                         
                         <div class="form-group">
                             <label for="message" class="form-label">Message *</label>
-                            <textarea id="message" name="message" class="form-textarea" required></textarea>
+                            <textarea id="message" name="message" class="form-textarea" data-validate="required" required></textarea>
+                        </div>
+                        
+                        <!-- reCAPTCHA v2 Checkbox -->
+                        <div class="form-group">
+                            <!-- CONFIGURATION REQUIRED: Replace with your reCAPTCHA Site Key from https://www.google.com/recaptcha/admin -->
+                            <div class="g-recaptcha" data-sitekey="6LdBgWssAAAAAP8HZOvwrnaBAvSsl1eJoz_qbueX"></div>
                         </div>
                         
                         <button type="submit" class="btn btn-primary w-full">Send Message</button>
@@ -243,6 +255,16 @@
     </a>
 
     <!-- JavaScript -->
+    <!-- EmailJS Library (must load before forms.js) -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <!-- Google reCAPTCHA v2 -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <!-- Form Validation & EmailJS Handler -->
+    <script src="js/forms.js"></script>
+    
+    <!-- Main Site JavaScript -->
     <script src="js/main.js"></script>
 </body>
 </html>

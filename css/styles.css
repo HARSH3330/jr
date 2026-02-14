@@ -1080,3 +1080,17 @@ tbody tr:last-child td {
 .badge-grid--start {
   justify-content: flex-start;
 }
+
+/* reCAPTCHA Styling */
+.g-recaptcha {
+  display: flex;
+  justify-content: center;
+  margin: var(--spacing-md) 0;
+}
+
+@media (max-width: 768px) {
+  .g-recaptcha {
+    transform: scale(0.9);
+    transform-origin: left;
+  }
+}
