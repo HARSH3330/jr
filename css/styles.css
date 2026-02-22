@@ -1,3 +1,13 @@
+/* Center align badge grid in Performance Highlights */
+.badge-grid-center {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0 auto;
+  max-width: 900px;
+}
 /* ========================================
    PREMIUM B2B POLYMER MANUFACTURING WEBSITE
    Design System & Styles
